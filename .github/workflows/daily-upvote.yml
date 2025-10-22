@@ -43,5 +43,5 @@ jobs:
           REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           SUBREDDITS: ${{ secrets.SUBREDDITS }}
           POST_COUNT: ${{ github.event.inputs.post_count || '1' }}
-          MIN_SCORE: ${{ github.event.inputs.min_score || '10' }}
+          MIN_SCORE: ${{ github.event.inputs.min_score || '100' }}
         run: python upvote_reddit.py
