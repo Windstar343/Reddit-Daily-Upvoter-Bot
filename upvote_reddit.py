@@ -20,7 +20,8 @@ def load_config():
         'client_secret': os.getenv('REDDIT_CLIENT_SECRET'),
         'username': os.getenv('REDDIT_USERNAME'),
         'password': os.getenv('REDDIT_PASSWORD'),
-        'user_agent': os.getenv('REDDIT_USER_AGENT', 'RedditUpvoterBot/1.0')
+        'user_agent': os.getenv('REDDIT_USER_AGENT', 'RedditUpvoterBot/1.0'),
+        'min_score': int(os.getenv('MIN_SCORE', '10'))
     }
 
     # Try to load subreddits from config file
@@ -28,6 +29,7 @@ def load_config():
         with open('config.json', 'r') as f:
             file_config = json.load(f)
             config['subreddits'] = file_config.get('subreddits', [])
+            config['min_score'] = file_config.get('min_score', config['min_score'])
 
     # Override with environment variable if present
     if os.getenv('SUBREDDITS'):
@@ -71,8 +73,8 @@ def get_reddit_client(config):
         return None
 
 
-def get_random_post(reddit, subreddits, limit=50):
-    """Get a random post from the specified subreddits"""
+def get_random_post(reddit, subreddits, limit=50, min_score=10):
+    """Get a random post from the specified subreddits with minimum upvotes"""
     # Pick a random subreddit from the list
     subreddit_name = random.choice(subreddits)
     print(f"Selected subreddit: r/{subreddit_name}")
@@ -80,15 +82,30 @@ def get_random_post(reddit, subreddits, limit=50):
     try:
         subreddit = reddit.subreddit(subreddit_name)
 
-        # Get hot posts (you can change to 'new', 'top', etc.)
-        posts = list(subreddit.hot(limit=limit))
+        # Get top posts from the last day (can change to 'hot', 'week', 'month', etc.)
+        posts = list(subreddit.top(time_filter='day', limit=limit))
 
-        if not posts:
+        # Filter posts by minimum score
+        popular_posts = [post for post in posts if post.score >= min_score]
+
+        if not popular_posts:
+            print(f"No posts with {min_score}+ upvotes found in r/{subreddit_name}")
+            print(f"Falling back to hot posts...")
+            # Fallback to hot posts if no popular posts found
+            posts = list(subreddit.hot(limit=limit))
+            popular_posts = [post for post in posts if post.score >= min_score]
+
+            if not popular_posts:
+                print(f"No posts found with minimum score. Using any available post.")
+                popular_posts = posts if posts else []
+
+        if not popular_posts:
             print(f"No posts found in r/{subreddit_name}")
             return None
 
-        # Pick a random post
-        post = random.choice(posts)
+        # Pick a random post from popular posts
+        post = random.choice(popular_posts)
+        print(f"Found {len(popular_posts)} posts with {min_score}+ upvotes")
         return post
     except Exception as e:
         print(f"Error fetching posts from r/{subreddit_name}: {e}")
@@ -135,6 +152,7 @@ def main():
         sys.exit(1)
 
     print(f"\nTarget subreddits: {', '.join(config['subreddits'])}")
+    print(f"Minimum post score: {config['min_score']} upvotes")
 
     # Authenticate with Reddit
     reddit = get_reddit_client(config)
@@ -152,7 +170,7 @@ def main():
 
         # Get a random post
         print("\nFetching random post...")
-        post = get_random_post(reddit, config['subreddits'])
+        post = get_random_post(reddit, config['subreddits'], min_score=config['min_score'])
         if not post:
             print("Failed to fetch a post")
             failed_upvotes += 1

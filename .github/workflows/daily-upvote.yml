@@ -11,6 +11,11 @@ on:
         required: false
         default: '1'
         type: string
+      min_score:
+        description: 'Minimum upvotes a post must have (default: 10)'
+        required: false
+        default: '10'
+        type: string
 
 jobs:
   upvote:
@@ -38,4 +43,5 @@ jobs:
           REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
           SUBREDDITS: ${{ secrets.SUBREDDITS }}
           POST_COUNT: ${{ github.event.inputs.post_count || '1' }}
+          MIN_SCORE: ${{ github.event.inputs.min_score || '10' }}
         run: python upvote_reddit.py

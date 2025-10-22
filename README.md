@@ -50,14 +50,15 @@ You can configure subreddits in two ways:
 - Example: `programming,python,technology,machinelearning`
 
 **Option 2: config.json (For local testing)**
-- Edit [config.json](config.json) and add your subreddits:
+- Edit [config.json](config.json) and add your subreddits and minimum score:
 ```json
 {
   "subreddits": [
     "programming",
     "python",
     "technology"
-  ]
+  ],
+  "min_score": 10
 }
 ```
 
@@ -74,12 +75,15 @@ You can manually trigger the bot and specify how many posts to upvote:
 1. Go to the **Actions** tab in your repository
 2. Click on **"Daily Reddit Upvote"** workflow
 3. Click the **"Run workflow"** dropdown button
-4. Enter the number of posts you want to upvote (e.g., enter `2` to upvote 2 random posts)
+4. Configure your options:
+   - **Number of posts to upvote**: Enter how many posts (e.g., `2` for 2 posts, default is `1`)
+   - **Minimum upvotes a post must have**: Enter minimum score (e.g., `50` for posts with 50+ upvotes, default is `10`)
 5. Click the green **"Run workflow"** button
 
 When manually triggered:
-- **Default**: Upvotes 1 post if you don't enter a number
-- **Custom**: Enter any number (e.g., `5`) to upvote that many random posts
+- **Default**: Upvotes 1 post with at least 10 upvotes
+- **Custom**: Specify both post count and minimum score
+- Posts are selected from the **top posts of the day** that meet your criteria
 - Each post is randomly selected from your subreddit list
 - The bot will provide a summary showing successful and failed upvotes
 
@@ -154,12 +158,22 @@ Use [crontab.guru](https://crontab.guru/) to help create cron schedules.
 
 ### Post Selection
 
-By default, the bot selects from the top 50 hot posts. You can modify this in [upvote_reddit.py](upvote_reddit.py#L86):
+By default, the bot:
+- Fetches the **top posts from the last 24 hours**
+- Filters posts to only those with **10+ upvotes** (configurable)
+- Randomly selects one post from the filtered list
+
+You can modify the selection strategy in [upvote_reddit.py](upvote_reddit.py#L84):
 
 ```python
-# Change 'hot' to 'new', 'top', 'rising', etc.
-posts = list(subreddit.hot(limit=50))
+# Change 'day' to 'week', 'month', 'year', or 'all'
+posts = list(subreddit.top(time_filter='day', limit=50))
+
+# Change minimum score threshold
+min_score = 10  # Only upvote posts with 10+ upvotes
 ```
+
+To change the default minimum score globally, set the `MIN_SCORE` environment variable or add it to your GitHub secrets.
 
 ## How It Works
 
