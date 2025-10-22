@@ -1,0 +1,41 @@
+name: Daily Reddit Upvote
+
+on:
+  schedule:
+    # Runs every day at 10:00 AM UTC (adjust as needed)
+    - cron: '0 10 * * *'
+  workflow_dispatch: # Allows manual triggering with custom options
+    inputs:
+      post_count:
+        description: 'Number of posts to upvote'
+        required: false
+        default: '1'
+        type: string
+
+jobs:
+  upvote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install praw
+
+      - name: Run upvote script
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+          SUBREDDITS: ${{ secrets.SUBREDDITS }}
+          POST_COUNT: ${{ github.event.inputs.post_count || '1' }}
+        run: python upvote_reddit.py
