@@ -2,8 +2,8 @@ name: Daily Reddit Upvote
 
 on:
   schedule:
-    # Runs every day at 10:00 AM UTC (adjust as needed)
-    - cron: '0 10 * * *'
+    # Runs every day at 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST)
+    - cron: '0 6 * * *'
   workflow_dispatch: # Allows manual triggering with custom options
     inputs:
       post_count:
