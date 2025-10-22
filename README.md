@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="DAILYUPVOTER BOT.png" alt="Daily Upvoter Bot" width="600">
+  <img src="DAILYUPVOTER BOTV2.png" alt="Daily Upvoter Bot" width="600">
 </div>
 
 # Reddit Daily Upvoter Bot
