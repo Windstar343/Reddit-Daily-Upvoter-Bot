@@ -261,4 +261,13 @@ MIN_SCORE: ${{ github.event.inputs.min_score || '100' }}  # Change '100' to your
 
 ## License
 
-This project is provided as-is for educational purposes. Use responsibly and in accordance with Reddit's Terms of Service and API rules.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**What this means:**
+- ✅ You can use, modify, and distribute this code
+- ✅ You can use it for personal or commercial purposes
+- ❌ You MUST give credit to the original author (Windstar343)
+- ❌ You CANNOT claim this code as your own original work
+- ⚠️ Use responsibly and in accordance with Reddit's Terms of Service and API rules
+
+Copyright (c) 2025 Windstar343
