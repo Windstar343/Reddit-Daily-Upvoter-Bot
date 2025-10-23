@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="DAILYUPVOTER BOTV2.png" alt="Daily Upvoter Bot" width="600">
+</div>
+
 # Reddit Daily Upvoter Bot
 
 A GitHub Actions bot that automatically upvotes one random post per day from specified subreddit(s).
