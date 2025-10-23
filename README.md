@@ -70,7 +70,7 @@ You can configure subreddits in two ways:
 
 1. Go to the "Actions" tab in your repository
 2. If prompted, enable GitHub Actions
-3. The workflow will run daily at 10:00 AM UTC (configurable in [.github/workflows/daily-upvote.yml](.github/workflows/daily-upvote.yml))
+3. The workflow will run daily at 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST) and upvote 1 post with at least 100 upvotes
 
 ### 5. Manual Execution
 
@@ -81,11 +81,11 @@ You can manually trigger the bot and specify how many posts to upvote:
 3. Click the **"Run workflow"** dropdown button
 4. Configure your options:
    - **Number of posts to upvote**: Enter how many posts (e.g., `2` for 2 posts, default is `1`)
-   - **Minimum upvotes a post must have**: Enter minimum score (e.g., `50` for posts with 50+ upvotes, default is `10`)
+   - **Minimum upvotes a post must have**: Enter minimum score (e.g., `500` for very popular posts, default is `100`)
 5. Click the green **"Run workflow"** button
 
 When manually triggered:
-- **Default**: Upvotes 1 post with at least 10 upvotes
+- **Default**: Upvotes 1 post with at least 100 upvotes
 - **Custom**: Specify both post count and minimum score
 - Posts are selected from the **top posts of the day** that meet your criteria
 - Each post is randomly selected from your subreddit list
@@ -146,15 +146,17 @@ $env:POST_COUNT=5; python upvote_reddit.py
 
 ### Schedule
 
-To change when the bot runs, edit the cron schedule in [.github/workflows/daily-upvote.yml](.github/workflows/daily-upvote.yml#L5):
+The bot runs automatically every day at **6:00 AM UTC** (7:00 AM CET / 8:00 AM CEST).
+
+To change when the bot runs, edit the cron schedule in [.github/workflows/daily-upvote.yml](.github/workflows/daily-upvote.yml#L6):
 
 ```yaml
 schedule:
-  - cron: '0 10 * * *'  # Runs at 10:00 AM UTC daily
+  - cron: '0 6 * * *'  # Currently set to 6:00 AM UTC (7:00 AM CET)
 ```
 
 Cron format: `minute hour day month day-of-week`
-- `0 10 * * *` = 10:00 AM UTC every day
+- `0 6 * * *` = 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST)
 - `0 0 * * *` = Midnight UTC every day
 - `0 18 * * *` = 6:00 PM UTC every day
 
@@ -164,7 +166,7 @@ Use [crontab.guru](https://crontab.guru/) to help create cron schedules.
 
 By default, the bot:
 - Fetches the **top posts from the last 24 hours**
-- Filters posts to only those with **10+ upvotes** (configurable)
+- Filters posts to only those with **100+ upvotes** (configurable)
 - Randomly selects one post from the filtered list
 
 You can modify the selection strategy in [upvote_reddit.py](upvote_reddit.py#L84):
@@ -174,20 +176,24 @@ You can modify the selection strategy in [upvote_reddit.py](upvote_reddit.py#L84
 posts = list(subreddit.top(time_filter='day', limit=50))
 
 # Change minimum score threshold
-min_score = 10  # Only upvote posts with 10+ upvotes
+min_score = 100  # Only upvote posts with 100+ upvotes
 ```
 
-To change the default minimum score globally, set the `MIN_SCORE` environment variable or add it to your GitHub secrets.
+To change the default minimum score, edit line 46 in [.github/workflows/daily-upvote.yml](.github/workflows/daily-upvote.yml#L46):
+```yaml
+MIN_SCORE: ${{ github.event.inputs.min_score || '100' }}  # Change '100' to your preferred default
+```
 
 ## How It Works
 
 **Automatic Daily Mode:**
-1. The GitHub Action triggers daily at the scheduled time
+1. The GitHub Action triggers daily at 6:00 AM UTC (7:00 AM CET)
 2. The script authenticates with Reddit using your credentials
 3. It randomly selects one subreddit from your list
-4. It fetches the hot posts from that subreddit
-5. It randomly selects one post and upvotes it
-6. It logs details about the upvoted post
+4. It fetches the top posts from the last 24 hours
+5. It filters posts to those with 100+ upvotes
+6. It randomly selects one post and upvotes it
+7. It logs details about the upvoted post
 
 **Manual Mode:**
 1. You trigger the workflow from GitHub Actions
