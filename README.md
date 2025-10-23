@@ -261,13 +261,27 @@ MIN_SCORE: ${{ github.event.inputs.min_score || '100' }}  # Change '100' to your
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)** - see the [LICENSE](LICENSE) file for details.
 
 **What this means:**
-- ✅ You can use, modify, and distribute this code
-- ✅ You can use it for personal or commercial purposes
-- ❌ You MUST give credit to the original author (Windstar343)
-- ❌ You CANNOT claim this code as your own original work
-- ⚠️ Use responsibly and in accordance with Reddit's Terms of Service and API rules
 
-Copyright (c) 2025 Windstar343
+✅ **You CAN:**
+- Use this code for FREE for personal use
+- Modify and adapt the code
+- Share it with others
+- Fork it on GitHub
+
+❌ **You CANNOT:**
+- **Sell this software or charge money for it**
+- **Use it for commercial purposes without permission**
+- **Claim this code as your own creation**
+- Remove the copyright notice or license
+
+⚠️ **Important:**
+- You MUST give credit to **Windstar343** (the original author)
+- Any modifications must also include attribution
+- Use responsibly and follow Reddit's Terms of Service
+
+**Need commercial use?** Contact Windstar343 for permission.
+
+Copyright (c) 2025 Windstar343. All rights reserved.
