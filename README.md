@@ -9,13 +9,25 @@ A GitHub Actions bot that automatically upvotes one random post per day from spe
 ## Features
 
 - Upvotes one random post daily from a list of subreddits
-- Runs automatically via GitHub Actions
+- Runs automatically via GitHub Actions (no server needed!)
+- Can also run locally on Windows/Mac/Linux
 - Can target single or multiple subreddits
 - Randomly selects both the subreddit and the post
 - Manual trigger option to upvote multiple posts at once
+- Only upvotes popular posts (configurable minimum score)
 - Provides detailed logging of upvoted posts
 
-## Setup Instructions
+## Two Ways to Use This Bot
+
+### Option 1: GitHub Actions (Recommended - Runs Automatically)
+Fork this repo and it runs automatically in the cloud every day. **No local setup needed!**
+
+### Option 2: Run Locally on Your Computer
+Download and run the Python script manually on your Windows/Mac/Linux machine whenever you want.
+
+---
+
+## Setup Instructions (GitHub Actions)
 
 ### 1. Create a Reddit Application
 
@@ -45,102 +57,124 @@ A GitHub Actions bot that automatically upvotes one random post per day from spe
    - `REDDIT_PASSWORD`: Your Reddit password
    - `SUBREDDITS`: Comma-separated list of subreddits (e.g., `programming,python,technology`)
 
-### 3. Configure Subreddits
-
-You can configure subreddits in two ways:
-
-**Option 1: GitHub Secrets (Recommended for GitHub Actions)**
-- Add to `SUBREDDITS` secret as comma-separated values
-- Example: `programming,python,technology,machinelearning`
-
-**Option 2: config.json (For local testing)**
-- Edit [config.json](config.json) and add your subreddits and minimum score:
-```json
-{
-  "subreddits": [
-    "programming",
-    "python",
-    "technology"
-  ],
-  "min_score": 10
-}
-```
-
-### 4. Enable GitHub Actions
+### 3. Enable GitHub Actions
 
 1. Go to the "Actions" tab in your repository
 2. If prompted, enable GitHub Actions
 3. The workflow will run daily at 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST) and upvote 1 post with at least 100 upvotes
 
-### 5. Manual Execution
+### 4. Manual Execution (Optional)
 
-You can manually trigger the bot and specify how many posts to upvote:
+You can manually trigger the bot anytime to upvote multiple posts:
 
 1. Go to the **Actions** tab in your repository
 2. Click on **"Daily Reddit Upvote"** workflow
 3. Click the **"Run workflow"** dropdown button
 4. Configure your options:
-   - **Number of posts to upvote**: Enter how many posts (e.g., `2` for 2 posts, default is `1`)
-   - **Minimum upvotes a post must have**: Enter minimum score (e.g., `500` for very popular posts, default is `100`)
+   - **Number of posts to upvote**: Enter how many posts (e.g., `5` for 5 posts)
+   - **Minimum upvotes a post must have**: Enter minimum score (e.g., `500` for very popular posts)
 5. Click the green **"Run workflow"** button
 
-When manually triggered:
-- **Default**: Upvotes 1 post with at least 100 upvotes
-- **Custom**: Specify both post count and minimum score
-- Posts are selected from the **top posts of the day** that meet your criteria
-- Each post is randomly selected from your subreddit list
-- The bot will provide a summary showing successful and failed upvotes
+---
 
-## Local Testing
+## Setup Instructions (Local/Manual Use)
 
-To test the bot locally:
+Want to run it on your own computer instead? Follow these steps:
 
-1. Install Python 3.11 or higher
+### 1. Install Python
 
-2. Install dependencies:
+Download and install Python 3.11 or higher from [python.org](https://www.python.org/downloads/)
+
+### 2. Download the Bot
+
+Clone or download this repository to your computer:
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/yourusername/RedditUpvoterStreakholder.git
+cd RedditUpvoterStreakholder
 ```
 
-3. Set environment variables:
+### 3. Install Dependencies
+
+Open terminal/command prompt in the project folder and run:
 ```bash
-# On Linux/Mac
-export REDDIT_CLIENT_ID="your_client_id"
-export REDDIT_CLIENT_SECRET="your_client_secret"
-export REDDIT_USERNAME="your_username"
-export REDDIT_PASSWORD="your_password"
-export SUBREDDITS="programming,python"
-
-# On Windows (Command Prompt)
-set REDDIT_CLIENT_ID=your_client_id
-set REDDIT_CLIENT_SECRET=your_client_secret
-set REDDIT_USERNAME=your_username
-set REDDIT_PASSWORD=your_password
-set SUBREDDITS=programming,python
-
-# On Windows (PowerShell)
-$env:REDDIT_CLIENT_ID="your_client_id"
-$env:REDDIT_CLIENT_SECRET="your_client_secret"
-$env:REDDIT_USERNAME="your_username"
-$env:REDDIT_PASSWORD="your_password"
-$env:SUBREDDITS="programming,python"
+pip install praw
 ```
 
-4. Run the script:
+### 4. Create Reddit App
+
+Follow the same steps as in **"Setup Instructions (GitHub Actions)"** section above to create a Reddit app.
+
+### 5. Edit config.json
+
+Open [config.json](config.json) and add your subreddits:
+```json
+{
+  "subreddits": [
+    "iphone",
+    "apple",
+    "Steam"
+  ],
+  "min_score": 100
+}
+```
+
+### 6. Set Up Environment Variables
+
+**Windows (PowerShell):**
+```powershell
+$env:REDDIT_CLIENT_ID="your_client_id_here"
+$env:REDDIT_CLIENT_SECRET="your_client_secret_here"
+$env:REDDIT_USERNAME="your_reddit_username"
+$env:REDDIT_PASSWORD="your_reddit_password"
+```
+
+**Windows (Command Prompt):**
+```cmd
+set REDDIT_CLIENT_ID=your_client_id_here
+set REDDIT_CLIENT_SECRET=your_client_secret_here
+set REDDIT_USERNAME=your_reddit_username
+set REDDIT_PASSWORD=your_reddit_password
+```
+
+**Mac/Linux:**
 ```bash
-# Upvote 1 post (default)
+export REDDIT_CLIENT_ID="your_client_id_here"
+export REDDIT_CLIENT_SECRET="your_client_secret_here"
+export REDDIT_USERNAME="your_reddit_username"
+export REDDIT_PASSWORD="your_reddit_password"
+```
+
+### 7. Run the Bot
+
+**Upvote 1 post:**
+```bash
 python upvote_reddit.py
+```
 
-# Upvote multiple posts (e.g., 5 posts)
-# On Linux/Mac:
-POST_COUNT=5 python upvote_reddit.py
+**Upvote multiple posts (e.g., 5 posts):**
 
-# On Windows (Command Prompt):
-set POST_COUNT=5 && python upvote_reddit.py
-
-# On Windows (PowerShell):
+Windows PowerShell:
+```powershell
 $env:POST_COUNT=5; python upvote_reddit.py
 ```
+
+Windows Command Prompt:
+```cmd
+set POST_COUNT=5 && python upvote_reddit.py
+```
+
+Mac/Linux:
+```bash
+POST_COUNT=5 python upvote_reddit.py
+```
+
+**Change minimum upvotes threshold:**
+```powershell
+# Windows PowerShell - Only upvote posts with 500+ upvotes
+$env:MIN_SCORE=500; python upvote_reddit.py
+```
+
+---
 
 ## Configuration
 
