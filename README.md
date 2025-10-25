@@ -61,7 +61,7 @@ Download and run the Python script manually on your Windows/Mac/Linux machine wh
 
 1. Go to the "Actions" tab in your repository
 2. If prompted, enable GitHub Actions
-3. The workflow will run daily at 6:00 AM UTC (7:00 AM CET / 8:00 AM CEST) and upvote 1 post with at least 100 upvotes
+3. The workflow will run twice per day at 6:00 AM and 6:00 PM UTC (7:00/19:00 AM CET / 8:00/20:00 AM CEST) and upvote 1 post with at least 100 upvotes on each run
 
 ### 4. Manual Execution (Optional)
 
@@ -180,13 +180,13 @@ $env:MIN_SCORE=500; python upvote_reddit.py
 
 ### Schedule
 
-The bot runs automatically every day at **6:00 AM UTC** (7:00 AM CET / 8:00 AM CEST).
+The bot now runs automatically **twice per day at 6:00 AM and 6:00 PM UTC**. Running more frequently than every 24 hours prevents Reddit’s daily activity streak from expiring due to small scheduler delays.
 
 To change when the bot runs, edit the cron schedule in [.github/workflows/daily-upvote.yml](.github/workflows/daily-upvote.yml#L6):
 
 ```yaml
 schedule:
-  - cron: '0 6 * * *'  # Currently set to 6:00 AM UTC (7:00 AM CET)
+  - cron: '0 6,18 * * *'  # Default: 6:00 AM and 6:00 PM UTC
 ```
 
 Cron format: `minute hour day month day-of-week`
